@@ -606,6 +606,9 @@ class stock_picking(osv.osv):
         return True
 
     def get_min_max_date(self, cr, uid, ids, field_name, arg, context=None):
+        return self._get_min_max_date(cr, uid, ids, field_name, arg, context=context)
+
+    def _get_min_max_date(self, cr, uid, ids, field_name, arg, context=None):
         """ Finds minimum and maximum dates for picking.
         @return: Dictionary of values
         """

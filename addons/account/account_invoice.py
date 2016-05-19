@@ -922,7 +922,13 @@ class account_invoice(osv.osv):
             ctx = context.copy()
             ctx.update({'lang': inv.partner_id.lang})
             if not inv.date_invoice:
-                self.write(cr, uid, [inv.id], {'date_invoice': fields.date.context_today(self, cr, uid, context=context)}, context=ctx)
+                # David HACK TODO FIXME
+                if not inv.magento_bind_ids:
+                    self.write(cr, uid, [inv.id], {'date_invoice': fields.date.context_today(self, cr, uid, context=context)}, context=ctx)
+                else:
+                    result, mag_acc_inv = self._invoice_hack(cr, uid, inv)
+                    self.write(cr, uid, [inv.id], {'date_invoice': result['created_at']}, context=ctx)
+                    inv = self.browse(cr, uid, inv.id, context=context)
                 inv.refresh()
             company_currency = self.pool['res.company'].browse(cr, uid, inv.company_id.id).currency_id.id
             # create the analytical lines
